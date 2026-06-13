@@ -34,7 +34,23 @@ Every study app gives students more to read. Constella gives them **proof they u
   into the existing sky automatically, and every engine-proposed link is honestly flagged
   *"suggested — verify"* (dashed thread) rather than presented as fact. The same seam upgrades to
   Fabric IQ's real semantic graph with no UI change.
-- **Work IQ** *(roadmap)* — intelligent, non-intrusive study scheduling.
+- **Work IQ** *(roadmap)* — intelligent, non-intrusive study scheduling. An offline stand-in runs
+  today: SM-2 spacing, knowledge-gain/loss tracking, exam-readiness, and weight×data course
+  prioritisation drive a gentle Notification-API nudge with a real question.
+
+## What's built (all offline, no key)
+
+- **Cite or refuse** Q&A grounded in the student's material, with hover-to-verify citations.
+- **The constellation** — uploaded courses draw themselves in; inferred cross-subject threads
+  animate on upload, honestly flagged *"suggested — verify"*.
+- **Voice** — ask by mic (Web Speech API) and hear answers read aloud; works hands-free.
+- **Two study modes** — graded Quiz cards and low-pressure "Did you know" Study facts.
+- **Diagnose, don't just score** — per-course readiness, up/down trend, weakest topics,
+  exam-ready verdict, and *what to study next* (the student's priority weight blended with the data).
+- **Honest refusal → a door** — out-of-syllabus questions surface trusted open sources
+  (Cornell LII, OWASP, MIT OCW, OpenStax…) to add, never a dead end.
+- **Installable PWA** — home-screen install, offline-resilient, gentle study nudges.
+- **Keyboard shortcuts** — space flips, 1–4 rate.
 
 ## Tech stack
 
