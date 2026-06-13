@@ -62,6 +62,7 @@ export const demoCourses: Course[] = [
     name: "Criminal Law",
     color: "#6fc7bd",
     examDate: "2026-07-08",
+    weight: 3,
     syllabus: crimSyllabus,
     topics: [
       { id: "t-actus", courseId: "crim", title: "Actus reus & mens rea", syllabusLine: 9 },
@@ -75,6 +76,7 @@ export const demoCourses: Course[] = [
     name: "Constitutional Law",
     color: "#b79bf0",
     examDate: "2026-07-15",
+    weight: 2,
     syllabus: constSyllabus,
     topics: [
       { id: "t-rights", courseId: "const", title: "Fundamental rights (Ch. IV)", syllabusLine: 5 },
@@ -88,6 +90,7 @@ export const demoCourses: Course[] = [
     name: "Cybersecurity",
     color: "#f0876a",
     examDate: "2026-07-02",
+    weight: 2,
     syllabus: cyberSyllabus,
     topics: [
       { id: "t-network", courseId: "cyber", title: "Network fundamentals", syllabusLine: 5 },
@@ -129,6 +132,7 @@ function card(
   docName: string,
   line: number,
   excerpt: string,
+  kind: Flashcard["kind"] = "qa",
 ): Flashcard {
   return {
     id,
@@ -136,6 +140,7 @@ function card(
     courseId,
     question,
     answer,
+    kind,
     citation: { docId: courseId, docName, line, excerpt, tier: "verbatim" },
     due: Date.now(),
     interval: 0,
@@ -205,6 +210,42 @@ export const demoCards: Flashcard[] = [
     12,
     cyberSyllabus[11],
   ),
+
+  /* Study cards ("Did you know…") — facts straight from their notes, no
+     grading. Repetition without pressure, drawn from the same source. */
+  card(
+    "f1",
+    "t-actus",
+    "crim",
+    "Did you know?",
+    "Under the Criminal Code Act ss. 24–25, intention, motive and accident are treated differently — a crime needs both a guilty act and a guilty mind.",
+    "LAW301-syllabus.txt",
+    10,
+    crimSyllabus[9],
+    "fact",
+  ),
+  card(
+    "f2",
+    "t-separation",
+    "const",
+    "Did you know?",
+    "Legislative, executive and judicial powers sit under ss. 4, 5 and 6 of the 1999 Constitution — each arm exists to check the others.",
+    "LAW205-syllabus.txt",
+    11,
+    constSyllabus[10],
+    "fact",
+  ),
+  card(
+    "f3",
+    "t-network",
+    "cyber",
+    "Did you know?",
+    "The OSI model and TCP/IP describe how data moves across a network — and every hop is a place where traffic can be intercepted.",
+    "CSC312-syllabus.txt",
+    5,
+    cyberSyllabus[4],
+    "fact",
+  ),
 ];
 
 export function freshDeck(): DeckState {
@@ -212,6 +253,7 @@ export function freshDeck(): DeckState {
     courses: demoCourses,
     links: demoLinks,
     cards: demoCards,
+    reviews: [],
     streak: 4,
   };
 }

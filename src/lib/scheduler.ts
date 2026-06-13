@@ -46,12 +46,22 @@ export function dueCards(cards: Flashcard[], now = Date.now()): Flashcard[] {
    Swap-in path: Supabase, same load/save signatures.
    ───────────────────────────────────────────────────────── */
 
-const KEY = "constella:deck:v1";
+const KEY = "constella:deck:v2";
+
+/** Defend against decks saved by older builds missing newer fields. */
+function normalize(deck: DeckState): DeckState {
+  return {
+    ...deck,
+    reviews: deck.reviews ?? [],
+    courses: deck.courses.map((c) => ({ ...c, weight: c.weight ?? 2 })),
+    cards: deck.cards.map((c) => ({ ...c, kind: c.kind ?? "qa" })),
+  };
+}
 
 export function loadDeck(): DeckState | null {
   try {
     const raw = localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as DeckState) : null;
+    return raw ? normalize(JSON.parse(raw) as DeckState) : null;
   } catch {
     return null;
   }

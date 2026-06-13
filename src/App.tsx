@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Flame, CalendarClock, Layers, ShieldCheck, RefreshCw } from "lucide-react";
-import type { Course, DeckState, Flashcard, Rating } from "./lib/types";
+import { Flame, CalendarClock, Layers, ShieldCheck, RefreshCw, ListChecks, BookOpen } from "lucide-react";
+import type { Course, DeckState, Flashcard, Rating, ReviewLog } from "./lib/types";
 import { freshDeck } from "./lib/demoData";
 import { dueCards, loadDeck, saveDeck, schedule, resetDeck } from "./lib/scheduler";
 import { suggestCrossLinks } from "./lib/crosslinks";
+import { prioritized } from "./lib/analytics";
 import { Constellation } from "./components/Constellation";
 import { FlashcardView } from "./components/Flashcard";
+import { ReadinessPanel } from "./components/ReadinessPanel";
 import { TutorPanel } from "./components/TutorPanel";
 import { UploadPanel } from "./components/UploadPanel";
+
+type StudyMode = "quiz" | "study";
 
 function Section({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
@@ -29,9 +33,20 @@ export default function App() {
     saveDeck(deck);
   }, [deck]);
 
-  const due = useMemo(() => dueCards(deck.cards), [deck.cards]);
+  const [mode, setMode] = useState<StudyMode>("quiz");
+
+  // Quiz = graded Q&A cards (signal). Study = low-pressure "Did you know" facts.
+  const due = useMemo(() => {
+    const kind = mode === "study" ? "fact" : "qa";
+    return dueCards(deck.cards.filter((c) => c.kind === kind));
+  }, [deck.cards, mode]);
   const current = due[0] ?? null;
   const currentCourse = current ? deck.courses.find((c) => c.id === current.courseId) : null;
+
+  const readiness = useMemo(
+    () => prioritized(deck.courses, deck.cards, deck.reviews),
+    [deck.courses, deck.cards, deck.reviews],
+  );
 
   const nextExam = useMemo(() => {
     const upcoming = deck.courses
@@ -45,9 +60,29 @@ export default function App() {
 
   function rate(rating: Rating) {
     if (!current) return;
+    const card = current;
+    setDeck((d) => {
+      // Only graded Q&A cards feed the knowledge-tracking log; study facts
+      // reschedule for repetition but don't pretend to measure mastery.
+      const reviews: ReviewLog[] =
+        card.kind === "qa"
+          ? [
+              ...d.reviews,
+              { id: `r${Date.now()}`, cardId: card.id, courseId: card.courseId, rating, at: Date.now() },
+            ]
+          : d.reviews;
+      return {
+        ...d,
+        reviews,
+        cards: d.cards.map((c) => (c.id === card.id ? schedule(c, rating) : c)),
+      };
+    });
+  }
+
+  function setWeight(courseId: string, weight: number) {
     setDeck((d) => ({
       ...d,
-      cards: d.cards.map((c) => (c.id === current.id ? schedule(c, rating) : c)),
+      courses: d.courses.map((c) => (c.id === courseId ? { ...c, weight } : c)),
     }));
   }
 
@@ -165,22 +200,52 @@ export default function App() {
       {/* ── study session ──────────────────────────────── */}
       <Section delay={0.22}>
         <div className="mb-5">
+          {/* mode toggle: graded quiz vs low-pressure study facts */}
+          <div className="mb-3 inline-flex rounded-xl border border-white/10 bg-night-700/50 p-0.5">
+            <button
+              onClick={() => setMode("quiz")}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                mode === "quiz" ? "bg-thread-500 text-night-900" : "text-ink-300 hover:text-ink-100"
+              }`}
+            >
+              <ListChecks size={13} /> Quiz
+            </button>
+            <button
+              onClick={() => setMode("study")}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                mode === "study" ? "bg-thread-500 text-night-900" : "text-ink-300 hover:text-ink-100"
+              }`}
+            >
+              <BookOpen size={13} /> Study
+            </button>
+          </div>
+
           {current && currentCourse ? (
             <FlashcardView
               key={current.id}
               card={current}
               courseLabel={`${currentCourse.code} · ${currentCourse.name}`}
               courseColor={currentCourse.color}
+              studyMode={mode === "study"}
               onRate={rate}
             />
           ) : (
             <div className="glass rounded-2xl p-8 text-center">
               <p className="display mb-1 text-lg text-ink-100">All caught up ✦</p>
               <p className="text-sm text-ink-500">
-                Nothing is due. The scheduler will bring cards back right before you'd forget them.
+                {mode === "study"
+                  ? "No study facts queued. Switch to Quiz, or they'll resurface later."
+                  : "Nothing is due. The scheduler will bring cards back right before you'd forget them."}
               </p>
             </div>
           )}
+        </div>
+      </Section>
+
+      {/* ── readiness: diagnose & prioritise ───────────── */}
+      <Section delay={0.26}>
+        <div className="mb-5">
+          <ReadinessPanel items={readiness} onSetWeight={setWeight} />
         </div>
       </Section>
 

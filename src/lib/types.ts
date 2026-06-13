@@ -36,6 +36,9 @@ export interface Course {
   topics: Topic[];
   /** raw uploaded material, line by line — the source of truth */
   syllabus: string[];
+  /** how much the student cares about this course (1 low … 3 high).
+      Blended with measured readiness + exam proximity to set priority. */
+  weight: number;
 }
 
 /** A thread between two topics, possibly across courses. The product. */
@@ -54,6 +57,10 @@ export interface CrossLink {
 
 export type Rating = "again" | "hard" | "good" | "easy";
 
+/** "qa" — a graded question/answer card (signal for mastery).
+    "fact" — a low-pressure study card ("Did you know…") from their notes. */
+export type CardKind = "qa" | "fact";
+
 export interface Flashcard {
   id: string;
   topicId: string;
@@ -61,6 +68,7 @@ export interface Flashcard {
   question: string;
   answer: string;
   citation: SourceCitation;
+  kind: CardKind;
   /** epoch ms when the card is next due */
   due: number;
   /** current interval in days */
@@ -68,6 +76,16 @@ export interface Flashcard {
   /** ease factor, SM-2 style */
   ease: number;
   reps: number;
+}
+
+/** One graded answer, kept as history so we can show knowledge gain/loss
+    over time (not just the card's latest state). */
+export interface ReviewLog {
+  id: string;
+  cardId: string;
+  courseId: string;
+  rating: Rating;
+  at: number; // epoch ms
 }
 
 export interface LedgerStep {
@@ -80,5 +98,6 @@ export interface DeckState {
   courses: Course[];
   links: CrossLink[];
   cards: Flashcard[];
+  reviews: ReviewLog[];
   streak: number;
 }

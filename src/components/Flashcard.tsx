@@ -30,11 +30,14 @@ export function FlashcardView({
   card,
   courseLabel,
   courseColor,
+  studyMode = false,
   onRate,
 }: {
   card: Card;
   courseLabel: string;
   courseColor: string;
+  /** study mode: low-pressure facts, no grading — just reveal and advance */
+  studyMode?: boolean;
   onRate: (rating: Rating) => void;
 }) {
   const [flipped, setFlipped] = useState(false);
@@ -55,7 +58,7 @@ export function FlashcardView({
       if (e.key === " ") {
         e.preventDefault();
         setFlipped((f) => !f);
-      } else if (flipped && KEY_TO_RATING[e.key]) {
+      } else if (flipped && !studyMode && KEY_TO_RATING[e.key]) {
         e.preventDefault();
         rate(KEY_TO_RATING[e.key]);
       }
@@ -64,7 +67,7 @@ export function FlashcardView({
     return () => window.removeEventListener("keydown", onKey);
     // re-bind when flip state changes so ratings respect "is the answer shown"
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flipped]);
+  }, [flipped, studyMode]);
 
   return (
     <div>
@@ -120,20 +123,31 @@ export function FlashcardView({
               )}
             </div>
             <p className="py-5 text-base leading-relaxed text-ink-100 sm:text-lg">{card.answer}</p>
-            <div className="flex flex-wrap gap-2" onClick={(e) => e.stopPropagation()}>
-              {RATINGS.map((r, i) => (
+            {studyMode ? (
+              <div onClick={(e) => e.stopPropagation()}>
                 <button
-                  key={r.key}
-                  onClick={() => rate(r.key)}
-                  className={`flex-1 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${r.cls}`}
-                  title={`Press ${i + 1}`}
+                  onClick={() => rate("good")}
+                  className="w-full rounded-xl border border-thread-500/50 bg-thread-500/10 px-3 py-2.5 text-sm font-medium text-thread-300 transition-colors hover:bg-thread-500/20"
                 >
-                  <span className="mr-1.5 font-mono text-[10px] opacity-50">{i + 1}</span>
-                  {r.label}
-                  <span className="ml-1.5 text-[10px] opacity-60">{r.hint}</span>
+                  Got it — next ✦
                 </button>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2" onClick={(e) => e.stopPropagation()}>
+                {RATINGS.map((r, i) => (
+                  <button
+                    key={r.key}
+                    onClick={() => rate(r.key)}
+                    className={`flex-1 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${r.cls}`}
+                    title={`Press ${i + 1}`}
+                  >
+                    <span className="mr-1.5 font-mono text-[10px] opacity-50">{i + 1}</span>
+                    {r.label}
+                    <span className="ml-1.5 text-[10px] opacity-60">{r.hint}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -71,6 +71,7 @@ export function UploadPanel({
         courseId: id,
         question: `Explain: ${title}`,
         answer: lines[contentIdx],
+        kind: "qa",
         citation: {
           docId: id,
           docName: `${code.replace(/\s+/g, "")}-upload.txt`,
@@ -90,7 +91,7 @@ export function UploadPanel({
     if (topics.length > 0) {
       const exam = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString().slice(0, 10);
       onAdd(
-        { id, code, name: name.trim(), color, examDate: exam, syllabus: lines, topics },
+        { id, code, name: name.trim(), color, examDate: exam, weight: 2, syllabus: lines, topics },
         cards,
       );
       setName("");
