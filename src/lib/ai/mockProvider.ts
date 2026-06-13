@@ -1,5 +1,6 @@
 import type { AIProvider, GroundedChunk, TutorContext } from "./adapter";
 import type { SourceCitation } from "../types";
+import { keywords } from "../text";
 
 /* ─────────────────────────────────────────────────────────
    MOCK PROVIDER — demo-grade grounding, zero network.
@@ -8,21 +9,6 @@ import type { SourceCitation } from "../types";
    The behaviour contract is identical to production:
    answer WITH a citation, or refuse honestly.
    ───────────────────────────────────────────────────────── */
-
-const STOPWORDS = new Set([
-  "the", "a", "an", "is", "are", "was", "what", "when", "where", "which",
-  "who", "why", "how", "does", "do", "did", "of", "in", "on", "to", "and",
-  "or", "for", "me", "my", "i", "it", "that", "this", "can", "you", "about",
-  "explain", "tell", "between", "difference", "vs",
-]);
-
-function keywords(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s.]/g, " ")
-    .split(/\s+/)
-    .filter((w) => w.length > 2 && !STOPWORDS.has(w));
-}
 
 interface Hit {
   citation: SourceCitation;
