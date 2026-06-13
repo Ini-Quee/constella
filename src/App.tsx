@@ -87,11 +87,12 @@ export default function App() {
               resetDeck();
               setDeck(freshDeck());
             }}
-            title="Reset demo data"
-            aria-label="Reset demo data"
-            className="rounded-full border border-white/10 p-2 text-ink-500 transition-colors hover:text-ink-300"
+            title="Reset to the demo state"
+            aria-label="Reset to the demo state"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-[11px] text-ink-500 transition-colors hover:text-ink-300"
           >
             <RefreshCw size={13} />
+            <span className="hidden sm:inline">Reset demo</span>
           </button>
         </div>
       </header>

@@ -91,8 +91,8 @@ See `CLAUDE.md` for the full task backlog and design law.
 Open these as issues and assign to Copilot — they're well-scoped and low-risk (Copilot stays away
 from the signature design work):
 
-1. **Add keyboard shortcuts** in `Flashcard.tsx` and `App.tsx`: space flips the card, keys 1–4 map
-   to Again / Hard / Good / Easy on the revealed card.
+1. ~~**Add keyboard shortcuts**: space flips the card, keys 1–4 rate the revealed card.~~ ✓ Done
+   (`Flashcard.tsx` — global handler, guarded against text fields).
 2. **Settings panel**: a small dropdown in the header with a notification toggle and a
    session-length picker (10 / 20 / all due). Persist via the existing localStorage helpers.
 3. **Per-course filter**: clicking a course caption in the constellation filters the study session

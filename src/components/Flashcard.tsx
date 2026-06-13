@@ -1,7 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import type { Flashcard as Card, Rating } from "../lib/types";
 import { SourceBadge } from "./SourceBadge";
+
+/** 1–4 map to the four recall ratings, in difficulty order. */
+const KEY_TO_RATING: Record<string, Rating> = {
+  "1": "again",
+  "2": "hard",
+  "3": "good",
+  "4": "easy",
+};
+
+/** True when focus is in a text field, so shortcuts never hijack typing. */
+function isTyping(): boolean {
+  const el = document.activeElement as HTMLElement | null;
+  if (!el) return false;
+  return el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable;
+}
 
 const RATINGS: { key: Rating; label: string; hint: string; cls: string }[] = [
   { key: "again", label: "Again", hint: "<10m", cls: "border-ember-500/50 text-ember-400 hover:bg-ember-500/10" },
@@ -29,6 +44,26 @@ export function FlashcardView({
     setTimeout(() => onRate(r), 250);
   }
 
+  /* Keyboard shortcuts — fluency on stage: space flips, 1–4 rate.
+     Ratings only fire once the answer is showing, so you can't grade
+     a card you haven't seen. Disabled while typing in any field. */
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (isTyping()) return;
+      if (e.key === " ") {
+        e.preventDefault();
+        setFlipped((f) => !f);
+      } else if (flipped && KEY_TO_RATING[e.key]) {
+        e.preventDefault();
+        rate(KEY_TO_RATING[e.key]);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // re-bind when flip state changes so ratings respect "is the answer shown"
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flipped]);
+
   return (
     <div>
       <div
@@ -55,7 +90,9 @@ export function FlashcardView({
                 {courseLabel}
               </span>
               <span className="inline-flex items-center gap-1.5 text-[11px] text-ink-500">
-                <RotateCcw size={12} /> tap to reveal
+                <RotateCcw size={12} /> tap or
+                <kbd className="rounded border border-white/15 bg-night-600/60 px-1.5 py-0.5 font-mono text-[10px] text-ink-300">space</kbd>
+                to reveal
               </span>
             </div>
             <p className="display py-6 text-xl leading-snug text-ink-100 sm:text-2xl">{card.question}</p>
@@ -67,12 +104,14 @@ export function FlashcardView({
             <SourceBadge citation={card.citation} />
             <p className="py-5 text-base leading-relaxed text-ink-100 sm:text-lg">{card.answer}</p>
             <div className="flex flex-wrap gap-2" onClick={(e) => e.stopPropagation()}>
-              {RATINGS.map((r) => (
+              {RATINGS.map((r, i) => (
                 <button
                   key={r.key}
                   onClick={() => rate(r.key)}
                   className={`flex-1 rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${r.cls}`}
+                  title={`Press ${i + 1}`}
                 >
+                  <span className="mr-1.5 font-mono text-[10px] opacity-50">{i + 1}</span>
                   {r.label}
                   <span className="ml-1.5 text-[10px] opacity-60">{r.hint}</span>
                 </button>
