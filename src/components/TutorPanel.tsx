@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
-import { Send, Sparkles, Mic, Square, Volume2, VolumeX } from "lucide-react";
+import { Send, Sparkles, Mic, Square, Volume2, VolumeX, ExternalLink, Compass } from "lucide-react";
 import { provider } from "../lib/ai";
 import type { GroundedChunk } from "../lib/ai";
 import type { Course, SourceCitation, LedgerStep } from "../lib/types";
+import { suggestSources, type SourceSuggestion } from "../lib/sources";
 import { SourceBadge } from "./SourceBadge";
 import { ProgressLedger } from "./ProgressLedger";
 import {
@@ -43,6 +44,7 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
   const [answer, setAnswer] = useState("");
   const [citation, setCitation] = useState<SourceCitation | null>(null);
   const [refused, setRefused] = useState(false);
+  const [sources, setSources] = useState<SourceSuggestion | null>(null);
   const [busy, setBusy] = useState(false);
   const [steps, setSteps] = useState<LedgerStep[]>(IDLE_STEPS);
   const [listening, setListening] = useState(false);
@@ -107,12 +109,14 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
     setAnswer("");
     setCitation(null);
     setRefused(false);
+    setSources(null);
     setSteps(makeSteps(0));
     setTimeout(() => setSteps(makeSteps(1)), 250);
 
     const wasVoice = spokeRef.current;
     spokeRef.current = false;
     let full = "";
+    let didRefuse = false;
 
     await provider.askTutor(q, { courses }, (chunk: GroundedChunk) => {
       if (chunk.type === "citation") {
@@ -124,12 +128,15 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
         setAnswer((a) => a + chunk.text);
       } else if (chunk.type === "refusal") {
         setRefused(true);
+        didRefuse = true;
         setSteps(makeSteps(2));
         full += chunk.text;
         setAnswer((a) => a + chunk.text);
       } else if (chunk.type === "done") {
         setSteps(makeSteps(3));
         setBusy(false);
+        // Don't leave them stranded: point to trusted material to add.
+        if (didRefuse) setSources(suggestSources(q, courses));
         // If they asked by voice, answer them by voice too.
         if (wasVoice && canSpeak) speak(full);
       }
@@ -241,6 +248,37 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
               {busy && <span className="caret text-thread-300">▍</span>}
             </p>
           </div>
+
+          {/* refusal → a door: trusted open material to add, never a dead end */}
+          {sources && !busy && (
+            <div className="rounded-xl border border-white/10 bg-night-700/40 p-4">
+              <p className="mb-2 inline-flex items-center gap-1.5 text-[11px] font-medium text-ink-300">
+                <Compass size={13} className="text-thread-300" />
+                Where to get trustworthy material on {sources.field}
+              </p>
+              <ul className="space-y-1.5">
+                {sources.sources.map((s) => (
+                  <li key={s.url}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-start gap-1.5 text-sm text-ink-100 hover:text-thread-300"
+                    >
+                      <ExternalLink size={13} className="mt-0.5 shrink-0 text-ink-500 group-hover:text-thread-300" />
+                      <span>
+                        <span className="font-medium underline-offset-2 group-hover:underline">{s.name}</span>
+                        <span className="block text-[11px] text-ink-500">{s.blurb}</span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2.5 text-[11px] text-ink-500">
+                Add what you find via <span className="text-ink-300">“Add a course”</span> below — then I’ll ground an answer in it and cite the line.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </section>
