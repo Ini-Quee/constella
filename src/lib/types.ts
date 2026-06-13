@@ -44,6 +44,12 @@ export interface CrossLink {
   fromTopicId: string;
   toTopicId: string;
   insight: string;
+  /**
+   * "curated" — a hand-verified true connection (solid thread).
+   * "inferred" — the engine's own suggestion from concept overlap,
+   * honestly flagged "verify" (dashed thread). Absent = curated.
+   */
+  tier?: "curated" | "inferred";
 }
 
 export type Rating = "again" | "hard" | "good" | "easy";

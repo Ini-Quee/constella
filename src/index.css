@@ -117,6 +117,18 @@ h1, h2, h3, .display {
   animation: drawThread 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* Inferred threads don't trace like curated ones — they fade up,
+   signalling "the engine proposed this" rather than "this is drawn
+   from your notes". Faintness comes from stroke-opacity so this
+   element-opacity animation never fights it. */
+@keyframes threadFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.thread-fade {
+  animation: threadFade 1.4s ease-out forwards;
+}
+
 @keyframes pulseDot {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.5); opacity: 0.6; }
@@ -134,7 +146,7 @@ h1, h2, h3, .display {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .twinkle, .thread-draw, .pulse-dot, .caret { animation: none; }
+  .twinkle, .thread-draw, .thread-fade, .pulse-dot, .caret { animation: none; }
   .card3d-inner { transition: none; }
 }
 

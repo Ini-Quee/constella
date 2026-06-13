@@ -29,7 +29,11 @@ Every study app gives students more to read. Constella gives them **proof they u
 - **Foundry IQ** — the grounded knowledge base. Student material is ingested and every answer is
   retrieved + cited from it. *(Wiring in progress — see `azureProvider.ts`; the app runs today in a
   fully-functional offline mock mode with the identical cite-or-refuse contract.)*
-- **Fabric IQ** *(roadmap)* — semantic cross-subject linking, powering the constellation threads.
+- **Fabric IQ** — semantic cross-subject linking, powering the constellation threads. Today this runs
+  offline as a keyword-overlap stand-in (`src/lib/crosslinks.ts`): uploading a new course threads it
+  into the existing sky automatically, and every engine-proposed link is honestly flagged
+  *"suggested — verify"* (dashed thread) rather than presented as fact. The same seam upgrades to
+  Fabric IQ's real semantic graph with no UI change.
 - **Work IQ** *(roadmap)* — intelligent, non-intrusive study scheduling.
 
 ## Tech stack

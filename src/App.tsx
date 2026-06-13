@@ -4,6 +4,7 @@ import { Flame, CalendarClock, Layers, ShieldCheck, RefreshCw } from "lucide-rea
 import type { Course, DeckState, Flashcard, Rating } from "./lib/types";
 import { freshDeck } from "./lib/demoData";
 import { dueCards, loadDeck, saveDeck, schedule, resetDeck } from "./lib/scheduler";
+import { suggestCrossLinks } from "./lib/crosslinks";
 import { Constellation } from "./components/Constellation";
 import { FlashcardView } from "./components/Flashcard";
 import { TutorPanel } from "./components/TutorPanel";
@@ -51,7 +52,17 @@ export default function App() {
   }
 
   function addCourse(course: Course, cards: Flashcard[]) {
-    setDeck((d) => ({ ...d, courses: [...d.courses, course], cards: [...d.cards, ...cards] }));
+    setDeck((d) => {
+      // The wow moment: thread the new course into the existing sky.
+      // Inferred (keyword-overlap) links, honestly flagged "verify".
+      const inferred = suggestCrossLinks(course, d.courses);
+      return {
+        ...d,
+        courses: [...d.courses, course],
+        links: [...d.links, ...inferred],
+        cards: [...d.cards, ...cards],
+      };
+    });
   }
 
   return (

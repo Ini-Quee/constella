@@ -1,26 +1,19 @@
 import { useMemo, useState } from "react";
 import { Link2 } from "lucide-react";
 import type { Course, CrossLink } from "../lib/types";
+import { computeLayout, VIEW_W, VIEW_H } from "../lib/layout";
 
 /* ─────────────────────────────────────────────────────────
    THE CONSTELLATION — the signature element.
    Each course is a star cluster. Each cross-discipline link
    is a thread of light that draws itself in. Clicking a
    thread reveals the insight. No two students' skies match,
-   because the sky is a portrait of THEIR courses.
+   because the sky is a portrait of THEIR courses — including
+   every course they upload (positions are computed in
+   lib/layout.ts, never hardcoded).
+   Solid threads are curated, verified links. Dashed threads
+   are the engine's own suggestions, honestly flagged.
    ───────────────────────────────────────────────────────── */
-
-const POS: Record<string, { x: number; y: number; label: "left" | "right" | "below" }> = {
-  "t-actus": { x: 150, y: 112, label: "left" },
-  "t-arrest": { x: 248, y: 178, label: "below" },
-  "t-defences": { x: 158, y: 246, label: "left" },
-  "t-rights": { x: 548, y: 108, label: "right" },
-  "t-fairhearing": { x: 648, y: 178, label: "right" },
-  "t-separation": { x: 580, y: 250, label: "right" },
-  "t-network": { x: 318, y: 352, label: "left" },
-  "t-sqli": { x: 412, y: 312, label: "below" },
-  "t-auth": { x: 492, y: 382, label: "right" },
-};
 
 const AMBIENT_STARS = [
   [60, 60], [340, 50], [470, 90], [720, 60], [760, 200], [60, 330],
@@ -37,6 +30,8 @@ export function Constellation({
 }) {
   const [active, setActive] = useState<CrossLink | null>(null);
 
+  const layout = useMemo(() => computeLayout(courses), [courses]);
+
   const topicMeta = useMemo(() => {
     const m = new Map<string, { title: string; color: string; courseCode: string }>();
     for (const c of courses)
@@ -44,7 +39,9 @@ export function Constellation({
     return m;
   }, [courses]);
 
-  const drawableLinks = links.filter((l) => POS[l.fromTopicId] && POS[l.toTopicId]);
+  const drawableLinks = links.filter(
+    (l) => layout.nodes.has(l.fromTopicId) && layout.nodes.has(l.toTopicId),
+  );
 
   return (
     <div className="glass dotgrid relative overflow-hidden rounded-2xl">
@@ -60,7 +57,12 @@ export function Constellation({
         </span>
       </div>
 
-      <svg viewBox="0 0 800 460" className="w-full" role="img" aria-label="Knowledge constellation showing connections between courses">
+      <svg
+        viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+        className="w-full"
+        role="img"
+        aria-label="Knowledge constellation showing connections between courses"
+      >
         {/* ambient sky */}
         {AMBIENT_STARS.map(([x, y], i) => (
           <circle
@@ -77,24 +79,28 @@ export function Constellation({
 
         {/* threads between subjects */}
         {drawableLinks.map((l) => {
-          const a = POS[l.fromTopicId];
-          const b = POS[l.toTopicId];
+          const a = layout.nodes.get(l.fromTopicId)!;
+          const b = layout.nodes.get(l.toTopicId)!;
           const midX = (a.x + b.x) / 2;
           const midY = Math.min(a.y, b.y) - 36;
+          const d = `M ${a.x} ${a.y} Q ${midX} ${midY} ${b.x} ${b.y}`;
           const isActive = active?.id === l.id;
+          const inferred = l.tier === "inferred";
           return (
             <g key={l.id}>
               <path
-                d={`M ${a.x} ${a.y} Q ${midX} ${midY} ${b.x} ${b.y}`}
+                d={d}
                 fill="none"
-                stroke={isActive ? "#aab5ff" : "#6f7ff2"}
+                stroke={isActive ? "#aab5ff" : inferred ? "#8b9afb" : "#6f7ff2"}
                 strokeWidth={isActive ? 2.4 : 1.4}
-                opacity={isActive ? 1 : 0.55}
-                className="thread-draw"
+                strokeDasharray={inferred ? "5 6" : undefined}
+                strokeOpacity={inferred ? (isActive ? 1 : 0.55) : undefined}
+                opacity={inferred ? undefined : isActive ? 1 : 0.55}
+                className={inferred ? "thread-fade" : "thread-draw"}
               />
               {/* generous invisible hit area */}
               <path
-                d={`M ${a.x} ${a.y} Q ${midX} ${midY} ${b.x} ${b.y}`}
+                d={d}
                 fill="none"
                 stroke="transparent"
                 strokeWidth={22}
@@ -108,11 +114,8 @@ export function Constellation({
         {/* course clusters */}
         {courses.map((course) =>
           course.topics.map((t) => {
-            const p = POS[t.id];
+            const p = layout.nodes.get(t.id);
             if (!p) return null;
-            const anchor = p.label === "left" ? "end" : p.label === "right" ? "start" : "middle";
-            const lx = p.label === "left" ? p.x - 14 : p.label === "right" ? p.x + 14 : p.x;
-            const ly = p.label === "below" ? p.y + 24 : p.y + 4;
             return (
               <g key={t.id}>
                 <circle cx={p.x} cy={p.y} r={11} fill={course.color} opacity={0.18} />
@@ -122,9 +125,9 @@ export function Constellation({
                   r={5}
                   fill={course.color}
                   className="twinkle"
-                  style={{ animationDelay: `${(p.x % 7) * 0.2}s` }}
+                  style={{ animationDelay: `${(Math.round(p.x) % 7) * 0.2}s` }}
                 />
-                <text x={lx} y={ly} textAnchor={anchor} fontSize={12} fill="#b9becf">
+                <text x={p.lx} y={p.ly} textAnchor={p.anchor} fontSize={12} fill="#b9becf">
                   {t.title}
                 </text>
               </g>
@@ -133,14 +136,20 @@ export function Constellation({
         )}
 
         {/* cluster captions */}
-        {courses.map((c, i) => {
-          const caption = [
-            { x: 165, y: 58 },
-            { x: 595, y: 58 },
-            { x: 405, y: 444 },
-          ][i] ?? { x: 60 + i * 200, y: 30 };
+        {courses.map((c) => {
+          const cap = layout.captions.get(c.id);
+          if (!cap) return null;
           return (
-            <text key={c.id} x={caption.x} y={caption.y} textAnchor="middle" fontSize={11} fill={c.color} opacity={0.9} style={{ fontFamily: "JetBrains Mono, monospace", letterSpacing: "0.08em" }}>
+            <text
+              key={c.id}
+              x={cap.x}
+              y={cap.y}
+              textAnchor="middle"
+              fontSize={11}
+              fill={c.color}
+              opacity={0.9}
+              style={{ fontFamily: "JetBrains Mono, monospace", letterSpacing: "0.08em" }}
+            >
               {c.code.toUpperCase()}
             </text>
           );
@@ -152,7 +161,8 @@ export function Constellation({
         <div className="border-t border-white/8 bg-night-700/60 px-5 py-4">
           <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-thread-300">
             {topicMeta.get(active.fromTopicId)?.courseCode} ↔ {topicMeta.get(active.toTopicId)?.courseCode}
-            {" · "}suggested link — verify
+            {" · "}
+            {active.tier === "inferred" ? "suggested link — verify" : "verified cross-subject thread"}
           </p>
           <p className="text-sm leading-relaxed text-ink-100">{active.insight}</p>
         </div>
