@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Volume2 } from "lucide-react";
 import type { Flashcard as Card, Rating } from "../lib/types";
 import { SourceBadge } from "./SourceBadge";
+import { readAloud, stopReading, readAloudSupported } from "../lib/voice";
 
 /** 1–4 map to the four recall ratings, in difficulty order. */
 const KEY_TO_RATING: Record<string, Rating> = {
@@ -39,6 +40,7 @@ export function FlashcardView({
   const [flipped, setFlipped] = useState(false);
 
   function rate(r: Rating) {
+    stopReading();
     setFlipped(false);
     /* let the flip-back animation breathe before the next card mounts */
     setTimeout(() => onRate(r), 250);
@@ -101,7 +103,22 @@ export function FlashcardView({
 
           {/* back — the answer, with its proof */}
           <div className="card-back glass flex min-h-64 flex-col justify-between rounded-2xl border-thread-500/30 p-6">
-            <SourceBadge citation={card.citation} />
+            <div className="flex items-center justify-between gap-2">
+              <SourceBadge citation={card.citation} />
+              {readAloudSupported() && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    readAloud(card.answer);
+                  }}
+                  aria-label="Read answer aloud"
+                  title="Read answer aloud"
+                  className="inline-flex shrink-0 items-center justify-center rounded-full border border-white/10 p-1.5 text-ink-500 transition-colors hover:border-thread-500/50 hover:text-thread-300"
+                >
+                  <Volume2 size={13} />
+                </button>
+              )}
+            </div>
             <p className="py-5 text-base leading-relaxed text-ink-100 sm:text-lg">{card.answer}</p>
             <div className="flex flex-wrap gap-2" onClick={(e) => e.stopPropagation()}>
               {RATINGS.map((r, i) => (
