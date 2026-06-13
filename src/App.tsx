@@ -1,11 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Flame, CalendarClock, Layers, ShieldCheck, RefreshCw, ListChecks, BookOpen } from "lucide-react";
+import { Flame, CalendarClock, Layers, ShieldCheck, RefreshCw, ListChecks, BookOpen, Bell, BellRing } from "lucide-react";
 import type { Course, DeckState, Flashcard, Rating, ReviewLog } from "./lib/types";
 import { freshDeck } from "./lib/demoData";
 import { dueCards, loadDeck, saveDeck, schedule, resetDeck } from "./lib/scheduler";
 import { suggestCrossLinks } from "./lib/crosslinks";
 import { prioritized } from "./lib/analytics";
+import {
+  notificationPermission,
+  requestNotificationPermission,
+  buildNudge,
+  sendNudge,
+  type Perm,
+} from "./lib/notify";
 import { Constellation } from "./components/Constellation";
 import { FlashcardView } from "./components/Flashcard";
 import { ReadinessPanel } from "./components/ReadinessPanel";
@@ -86,6 +93,23 @@ export default function App() {
     }));
   }
 
+  const [perm, setPerm] = useState<Perm>(() => notificationPermission());
+
+  async function remindMe() {
+    let p = perm;
+    if (p === "default") {
+      p = await requestNotificationPermission();
+      setPerm(p);
+    }
+    if (p === "granted") {
+      const nudge = buildNudge(deck) ?? {
+        title: "You're all caught up ✦",
+        body: "Nothing overdue right now — come back when a card is due.",
+      };
+      sendNudge(nudge);
+    }
+  }
+
   function addCourse(course: Course, cards: Flashcard[]) {
     setDeck((d) => {
       // The wow moment: thread the new course into the existing sky.
@@ -117,6 +141,18 @@ export default function App() {
           <span className="hidden items-center gap-1.5 rounded-full border border-star-500/40 bg-star-500/10 px-3 py-1.5 text-[11px] font-medium text-star-300 sm:inline-flex">
             <ShieldCheck size={13} /> Grounded · cite or refuse
           </span>
+          {perm !== "unsupported" && (
+            <button
+              onClick={() => void remindMe()}
+              title={perm === "denied" ? "Notifications blocked in browser settings" : "Send me a study nudge"}
+              aria-label="Send me a study nudge"
+              disabled={perm === "denied"}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-[11px] text-ink-500 transition-colors hover:text-thread-300 disabled:opacity-40"
+            >
+              {perm === "granted" ? <BellRing size={13} /> : <Bell size={13} />}
+              <span className="hidden sm:inline">{perm === "granted" ? "Nudge me" : "Remind me"}</span>
+            </button>
+          )}
           <button
             onClick={() => {
               resetDeck();
