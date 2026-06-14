@@ -79,16 +79,16 @@ function constellation(withCloud) {
   // clusters
   const law = [[300,300,"Actus reus & mens rea",276,250,"end"],[380,380,"Arrest & police powers",380,418,"middle"],[250,400,"General defences",234,406,"end"]];
   const con = [[930,300,"Fundamental rights",952,255,"start"],[1000,380,"Fair hearing (s.36)",1022,386,"start"],[900,420,"Separation of powers",922,440,"start"]];
-  const cyb = [[600,470,"Network fundamentals",600,512,"middle"],[680,430,"SQL injection",702,436,"start"],[540,420,"Authentication & access",524,426,"end"]];
+  const cyb = [[600,510,"Network fundamentals",600,548,"middle"],[715,455,"SQL injection",735,460,"start"],[560,460,"Authentication & access",560,498,"middle"]];
   const cloud = [[600,250,"Identity & access",600,224,"middle"],[520,300,"Network & connectivity",504,306,"end"],[660,310,"Cloud concepts",682,316,"start"]];
   let s = "";
   // threads (curated)
   s += thread(380,380,930,300,false); // arrest ↔ rights
   s += thread(250,400,1000,380,false); // defences ↔ fair hearing
-  s += thread(680,430,540,420,false); // sqli ↔ auth
+  s += thread(715,455,560,460,false); // sqli ↔ auth
   if (withCloud) {
-    s += thread(520,300,600,470,true); // cloud network ↔ cyber network (inferred)
-    s += thread(600,250,540,420,true); // cloud identity ↔ cyber auth (inferred)
+    s += thread(520,300,600,510,true); // cloud network ↔ cyber network (inferred)
+    s += thread(600,250,560,460,true); // cloud identity ↔ cyber auth (inferred)
   }
   const draw = (arr,color)=>arr.map(([x,y,l,lx,ly,an])=>star(x,y,color,l,lx,ly,an)).join("");
   s += draw(law,C.gold)+draw(con,C.indigo)+draw(cyb,C.orange);
@@ -218,7 +218,7 @@ function readRow(y, color, code, name, score, band, bandColor, barW, trend, focu
   // bar
   s+=`<rect x="${x+24}" y="${y+54}" width="${w-48}" height="8" rx="4" fill="rgba(255,255,255,0.08)"/>`;
   s+=`<rect x="${x+24}" y="${y+54}" width="${(w-48)*barW/100}" height="8" rx="4" fill="${bandColor}"/>`;
-  let meta=band+(ready?"   ✓ exam-ready":"")+(weak?"   · weak on "+weak:"");
+  let meta=band+(ready?"  ✓":"")+(weak?"   · weak on "+weak:"");
   s+=t(x+24,y+84,meta,{size:13,fill:bandColor});
   // weight buttons
   const ws=["Low","Med","High"];
