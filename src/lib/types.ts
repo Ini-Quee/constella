@@ -100,4 +100,26 @@ export interface DeckState {
   cards: Flashcard[];
   reviews: ReviewLog[];
   streak: number;
+  /** who the student is and what they're working toward — set in onboarding.
+      This is what gives the courses meaning (a degree + a career goal). */
+  profile: UserProfile | null;
+}
+
+/** The student, captured in the first-run survey. Turns a pile of courses
+    into "my plan": my degree, my career goal, my exam dates. */
+export interface UserProfile {
+  name: string;
+  institution: string;
+  /** degree / programme, e.g. "LLB Law" */
+  programme: string;
+  /** year of study, e.g. 2 */
+  year: number;
+  /** ISO date of finals / main exams */
+  finalsDate: string;
+  /** career ambition, e.g. "Cloud Engineer" */
+  goal: string;
+  /** a certification they're also pursuing, e.g. "AWS Cloud Practitioner" */
+  certTarget: string;
+  /** ISO date of that cert exam (optional) */
+  certExamDate: string;
 }

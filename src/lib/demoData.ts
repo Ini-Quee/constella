@@ -1,4 +1,4 @@
-import type { Course, CrossLink, DeckState, Flashcard } from "./types";
+import type { Course, CrossLink, DeckState, Flashcard, UserProfile } from "./types";
 
 /* ─────────────────────────────────────────────────────────
    DEMO SEED — three courses, two faculties, one engine.
@@ -248,6 +248,19 @@ export const demoCards: Flashcard[] = [
   ),
 ];
 
+/** One-tap sample for the demo: a Warwick law student also chasing a cloud
+    cert — which is exactly why her sky holds both Law and Cybersecurity. */
+export const demoProfile: UserProfile = {
+  name: "Erica",
+  institution: "University of Warwick",
+  programme: "LLB Law",
+  year: 2,
+  finalsDate: "2026-07-08",
+  goal: "Cloud Engineer",
+  certTarget: "AWS Cloud Practitioner",
+  certExamDate: "2026-08-02",
+};
+
 export function freshDeck(): DeckState {
   return {
     courses: demoCourses,
@@ -255,5 +268,6 @@ export function freshDeck(): DeckState {
     cards: demoCards,
     reviews: [],
     streak: 4,
+    profile: null, // null → first-run onboarding survey appears
   };
 }

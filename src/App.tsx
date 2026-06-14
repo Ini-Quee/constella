@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { Flame, CalendarClock, Layers, ShieldCheck, RefreshCw, ListChecks, BookOpen, Bell, BellRing } from "lucide-react";
-import type { Course, DeckState, Flashcard, Rating, ReviewLog } from "./lib/types";
+import type { Course, DeckState, Flashcard, Rating, ReviewLog, UserProfile } from "./lib/types";
 import { freshDeck } from "./lib/demoData";
 import { dueCards, loadDeck, saveDeck, schedule, resetDeck } from "./lib/scheduler";
 import { suggestCrossLinks } from "./lib/crosslinks";
 import { prioritized } from "./lib/analytics";
+import { Onboarding } from "./components/Onboarding";
+import { PlanHeader } from "./components/PlanHeader";
 import {
   notificationPermission,
   requestNotificationPermission,
@@ -93,6 +95,14 @@ export default function App() {
     }));
   }
 
+  function setProfile(profile: UserProfile) {
+    setDeck((d) => ({ ...d, profile }));
+  }
+
+  function scrollToAddCourse() {
+    document.getElementById("add-course")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   const [perm, setPerm] = useState<Perm>(() => notificationPermission());
 
   async function remindMe() {
@@ -126,6 +136,9 @@ export default function App() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 pb-20 pt-6 sm:px-6">
+      {/* first run: the survey that turns courses into a plan */}
+      {!deck.profile && <Onboarding onComplete={setProfile} />}
+
       {/* ── header ─────────────────────────────────────── */}
       <header className="mb-10 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -168,18 +181,25 @@ export default function App() {
         </div>
       </header>
 
-      {/* ── hero ───────────────────────────────────────── */}
+      {/* ── plan header (personalised) or fallback hero ── */}
       <Section>
-        <h1 className="display mb-2 text-3xl font-semibold leading-tight text-ink-100 sm:text-4xl">
-          Every answer has a source.
-          <br />
-          <span className="text-thread-300">Every subject has a thread.</span>
-        </h1>
-        <p className="mb-8 max-w-xl text-sm leading-relaxed text-ink-500">
-          Constella studies from <em className="not-italic text-ink-300">your</em> uploaded material — citing the
-          exact line for every claim, refusing honestly when it doesn't know, and weaving your courses into one
-          connected sky.
-        </p>
+        {deck.profile ? (
+          <PlanHeader
+            profile={deck.profile}
+            courses={deck.courses}
+            readiness={readiness}
+            dueToday={due.length}
+            onAddCourse={scrollToAddCourse}
+          />
+        ) : (
+          <div className="mb-8">
+            <h1 className="display mb-2 text-3xl font-semibold leading-tight text-ink-100 sm:text-4xl">
+              Every answer has a source.
+              <br />
+              <span className="text-thread-300">Every subject has a thread.</span>
+            </h1>
+          </div>
+        )}
       </Section>
 
       {/* ── bento: constellation + today ───────────────── */}
@@ -294,7 +314,9 @@ export default function App() {
 
       {/* ── upload ─────────────────────────────────────── */}
       <Section delay={0.34}>
-        <UploadPanel courseCount={deck.courses.length} onAdd={addCourse} />
+        <div id="add-course">
+          <UploadPanel courseCount={deck.courses.length} onAdd={addCourse} />
+        </div>
       </Section>
 
       <footer className="mt-12 text-center font-mono text-[10px] text-ink-700">

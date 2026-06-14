@@ -53,6 +53,7 @@ function normalize(deck: DeckState): DeckState {
   return {
     ...deck,
     reviews: deck.reviews ?? [],
+    profile: deck.profile ?? null,
     courses: deck.courses.map((c) => ({ ...c, weight: c.weight ?? 2 })),
     cards: deck.cards.map((c) => ({ ...c, kind: c.kind ?? "qa" })),
   };
