@@ -237,6 +237,9 @@ export default function App() {
               <ShieldCheck size={11} className="text-star-400" />
               Grounded · cite or refuse
             </span>
+            <p className="text-[10px] text-ink-700">
+              by <span className="text-ink-500">Erica Innocent Effiong</span>
+            </p>
             <div className="flex items-center gap-2">
               {perm !== "unsupported" && (
                 <button
@@ -481,8 +484,11 @@ export default function App() {
 
             <footer className="mt-16 mb-8 text-center">
               <div className="section-divider mb-6" />
-              <p className="font-mono text-[10px] text-ink-700">
-                constella · built for the innovation studio hackathon · grounded by design
+              <p className="font-mono text-[10px] text-ink-700 mb-1">
+                constella · designed &amp; built by <span className="text-ink-500">Erica Innocent Effiong</span> · innovation studio hackathon
+              </p>
+              <p className="font-mono text-[9px] text-ink-700">
+                concept, design, and implementation — all original work
               </p>
             </footer>
           </div>

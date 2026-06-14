@@ -125,20 +125,24 @@ export function Onboarding({ onComplete }: { onComplete: (p: UserProfile) => voi
 
         <div className="section-divider mb-5" />
 
+        {/* primary CTA for judges — skip straight to the app */}
+        <button
+          onClick={() => onComplete(demoProfile)}
+          className="mb-4 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-thread-500 px-5 py-3 text-sm font-semibold text-night-900 transition-all hover:bg-thread-400 hover:shadow-lg hover:shadow-thread-500/20"
+        >
+          <Compass size={16} />
+          Explore the demo — Erica's study plan
+        </button>
+
         <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-[11px] text-ink-700">
+            or fill in your details below to build your own plan
+          </p>
           <button
-            onClick={() => onComplete(demoProfile)}
-            className="inline-flex items-center gap-1.5 text-xs text-ink-500 underline-offset-2 hover:text-ink-300 hover:underline transition-colors"
+            onClick={() => onComplete({ ...p, name: p.name.trim() || "Student", institution: p.institution.trim() || "your institution", programme: p.programme.trim() || "your programme" })}
+            className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-ink-300 transition-all hover:border-thread-500/40 hover:text-thread-300"
           >
-            <Compass size={12} />
-            Use the demo profile (Erica · Warwick)
-          </button>
-          <button
-            onClick={() => onComplete({ ...p, name: p.name.trim(), institution: p.institution.trim() || "your institution", programme: p.programme.trim() })}
-            disabled={!ready}
-            className="inline-flex items-center gap-2 rounded-xl bg-thread-500 px-5 py-2.5 text-sm font-medium text-night-900 transition-all hover:bg-thread-400 hover:shadow-lg hover:shadow-thread-500/20 disabled:opacity-40"
-          >
-            Create my plan <ArrowRight size={15} />
+            Create my plan <ArrowRight size={14} />
           </button>
         </div>
       </div>
