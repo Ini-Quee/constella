@@ -19,10 +19,10 @@
   --color-night-600: #1a1d2c;
   --color-night-500: #242841;
 
-  --color-ink-100: #f2f4fa;
-  --color-ink-300: #ccd1de;
-  --color-ink-500: #a6acbe;
-  --color-ink-700: #7d8399;
+  --color-ink-100: #f4f6fb;
+  --color-ink-300: #d2d7e2;
+  --color-ink-500: #b2b8c8;
+  --color-ink-700: #9197ab;
 
   --color-thread-300: #aab5ff;
   --color-thread-400: #8b9afb;
@@ -43,17 +43,18 @@
 }
 
 html {
-  /* Slightly larger base so every rem-sized text scales up for
-     projector / phone legibility without touching each component. */
-  font-size: 17.5px;
+  /* Larger base so every rem-sized text scales up for projector / phone
+     legibility without touching each component. */
+  font-size: 18.5px;
   background: var(--color-night-900);
   color-scheme: dark;
 }
 
 body {
   font-family: var(--font-body);
-  /* A touch heavier than 400 — more presence on screen and on a projector. */
-  font-weight: 450;
+  /* Heavier than default — clear, bold presence on screen and projector. */
+  font-weight: 500;
+  line-height: 1.55;
   color: var(--color-ink-100);
   background:
     radial-gradient(1100px 600px at 75% -10%, rgba(111, 127, 242, 0.10), transparent 60%),
@@ -66,7 +67,19 @@ body {
 
 h1, h2, h3, .display {
   font-family: var(--font-display);
+  font-weight: 600;
   letter-spacing: -0.02em;
+}
+
+/* Make the small uppercase labels read clearly instead of thin & faint. */
+.tracking-wider,
+.uppercase {
+  font-weight: 600;
+}
+
+/* Buttons and interactive accents carry a little more weight. */
+button {
+  font-weight: 600;
 }
 
 /* Glass surface — used for floating panels only, never full pages */
