@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Send, Sparkles, Mic, Square, Volume2, VolumeX, ExternalLink, Compass } from "lucide-react";
+import { Send, Sparkles, Mic, Square, Volume2, VolumeX, ExternalLink, Compass, MessageSquare, Shield } from "lucide-react";
 import { provider } from "../lib/ai";
 import type { GroundedChunk } from "../lib/ai";
 import type { Course, SourceCitation, LedgerStep } from "../lib/types";
@@ -16,16 +16,14 @@ import {
 } from "../lib/voice";
 
 /* ─────────────────────────────────────────────────────────
-   TUTOR PANEL — cite or refuse, live on screen.
-   The two suggested questions are the demo script:
-   one lands inside the material (gold citation appears),
-   one lands outside (graceful, honest refusal appears).
-   That refusal is the most convincing trust demo we have.
+   TUTOR PANEL v2 — richer UI, better visual treatment.
+   Improved suggested questions, better answer cards,
+   more prominent refusal state, better source suggestions.
    ───────────────────────────────────────────────────────── */
 
 const SUGGESTED = [
-  "When is an arrest lawful?",
-  "What did the Supreme Court decide in 2025 about crypto?",
+  { q: "When is an arrest lawful?", icon: "⚖️" },
+  { q: "What did the Supreme Court decide in 2025 about crypto?", icon: "🔍" },
 ];
 
 const IDLE_STEPS: LedgerStep[] = [];
@@ -51,18 +49,15 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
   const [speaking, setSpeaking] = useState(false);
   const liveRef = useRef<HTMLDivElement>(null);
   const sessionRef = useRef<VoiceSession | null>(null);
-  const spokeRef = useRef(false); // did the current question come in by voice?
+  const spokeRef = useRef(false);
 
   const canListen = voiceInputSupported();
   const canSpeak = readAloudSupported();
 
-  /* Read an answer aloud while it stays on screen — hear it and see it. */
   function speak(text: string) {
     if (!text.trim()) return;
     setSpeaking(true);
     readAloud(text);
-    // speechSynthesis has no reliable end event across browsers, so we
-    // approximate: clear the speaking flag when cancelled or after a beat.
     const ms = Math.min(20000, 600 + text.length * 55);
     window.setTimeout(() => setSpeaking(false), ms);
   }
@@ -135,9 +130,7 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
       } else if (chunk.type === "done") {
         setSteps(makeSteps(3));
         setBusy(false);
-        // Don't leave them stranded: point to trusted material to add.
         if (didRefuse) setSources(suggestSources(q, courses));
-        // If they asked by voice, answer them by voice too.
         if (wasVoice && canSpeak) speak(full);
       }
     });
@@ -146,31 +139,44 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
   return (
     <section className="glass rounded-2xl p-5 sm:p-6" aria-label="Ask your material">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h2 className="display text-base font-semibold text-ink-100">Ask your material</h2>
-          <p className="text-xs text-ink-500">
-            Answers come from your uploads, with the exact line cited — or an honest refusal. Never a guess.
-          </p>
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-thread-500/10 border border-thread-500/20">
+            <MessageSquare size={14} className="text-thread-300" />
+          </div>
+          <div>
+            <h2 className="display text-base font-semibold text-ink-100">Ask your material</h2>
+            <p className="text-[11px] text-ink-500">
+              Cited from your uploads — or an honest refusal
+            </p>
+          </div>
         </div>
-        <span className="font-mono text-[10px] text-ink-700">engine: {provider.name}</span>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-star-500/30 bg-star-500/8 px-2.5 py-1 text-[10px] text-star-300">
+            <Shield size={10} /> cite or refuse
+          </span>
+          <span className="font-mono text-[10px] text-ink-700">{provider.name}</span>
+        </div>
       </div>
 
+      {/* suggested questions */}
       <div className="mb-3 flex flex-wrap gap-2">
         {SUGGESTED.map((s) => (
           <button
-            key={s}
+            key={s.q}
             onClick={() => {
-              setQuestion(s);
-              void ask(s);
+              setQuestion(s.q);
+              void ask(s.q);
             }}
             disabled={busy}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-night-600/50 px-3 py-1.5 text-xs text-ink-300 transition-colors hover:border-thread-500/50 hover:text-thread-300 disabled:opacity-40"
+            className="group inline-flex items-center gap-2 rounded-xl border border-white/8 bg-night-600/40 px-3.5 py-2 text-xs text-ink-300 transition-all hover:border-thread-500/40 hover:bg-thread-500/8 hover:text-thread-300 disabled:opacity-40"
           >
-            <Sparkles size={12} /> {s}
+            <span className="text-sm">{s.icon}</span>
+            <span>{s.q}</span>
           </button>
         ))}
       </div>
 
+      {/* input form */}
       <form
         className="flex gap-2"
         onSubmit={(e) => {
@@ -178,23 +184,31 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
           void ask(question);
         }}
       >
-        <input
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder={listening ? "Listening…" : "Ask anything about your courses…"}
-          aria-label="Your question"
-          className="min-w-0 flex-1 rounded-xl border border-white/10 bg-night-700/70 px-4 py-2.5 text-sm text-ink-100 placeholder:text-ink-700 focus:border-thread-500/60 focus:outline-none"
-        />
+        <div className="relative flex-1">
+          <input
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder={listening ? "Listening…" : "Ask anything about your courses…"}
+            aria-label="Your question"
+            className="w-full rounded-xl border border-white/10 bg-night-700/60 px-4 py-3 text-sm text-ink-100 placeholder:text-ink-700 focus:border-thread-500/50 focus:outline-none focus:ring-1 focus:ring-thread-500/20 transition-all"
+          />
+          {listening && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-[11px] text-ember-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-ember-400 pulse-dot" />
+              listening
+            </span>
+          )}
+        </div>
         {canListen && (
           <button
             type="button"
             onClick={toggleMic}
             aria-label={listening ? "Stop listening" : "Ask by voice"}
             title={listening ? "Stop listening" : "Ask by voice"}
-            className={`inline-flex items-center justify-center rounded-xl border px-3 py-2.5 transition-colors ${
+            className={`inline-flex items-center justify-center rounded-xl border px-3.5 py-3 transition-all ${
               listening
                 ? "border-ember-500/60 bg-ember-500/10 text-ember-400"
-                : "border-white/10 text-ink-300 hover:border-thread-500/50 hover:text-thread-300"
+                : "border-white/10 text-ink-300 hover:border-thread-500/40 hover:text-thread-300"
             }`}
           >
             {listening ? <Square size={15} /> : <Mic size={15} />}
@@ -203,32 +217,41 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
         <button
           type="submit"
           disabled={busy || !question.trim()}
-          className="inline-flex items-center gap-2 rounded-xl bg-thread-500 px-4 py-2.5 text-sm font-medium text-night-900 transition-colors hover:bg-thread-400 disabled:opacity-40"
+          className="inline-flex items-center gap-2 rounded-xl bg-thread-500 px-5 py-3 text-sm font-medium text-night-900 transition-all hover:bg-thread-400 hover:shadow-lg hover:shadow-thread-500/20 disabled:opacity-40"
         >
           <Send size={15} /> Ask
         </button>
       </form>
 
+      {/* answer area */}
       {(busy || answer) && (
         <div className="mt-4 space-y-3" ref={liveRef} aria-live="polite">
           <ProgressLedger steps={steps} />
           <div
-            className={`rounded-xl border p-4 text-sm leading-relaxed ${
+            className={`rounded-xl border p-5 text-sm leading-relaxed ${
               refused
-                ? "border-star-500/40 bg-star-500/5 text-ink-100"
-                : "border-white/8 bg-night-700/50 text-ink-100"
+                ? "border-star-500/30 bg-gradient-to-br from-star-500/8 to-transparent text-ink-100"
+                : citation
+                  ? "border-thread-500/20 bg-gradient-to-br from-thread-500/5 to-transparent text-ink-100"
+                  : "border-white/8 bg-night-700/40 text-ink-100"
             }`}
           >
             {citation && (
-              <div className="mb-2.5">
+              <div className="mb-3 flex items-center gap-2">
                 <SourceBadge citation={citation} />
+                <span className="text-[10px] text-ink-500">grounded in your material</span>
               </div>
             )}
             <div className="flex items-start justify-between gap-3">
               {refused && (
-                <p className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-star-300">
-                  honest refusal — not in your material
-                </p>
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-star-500/10 border border-star-500/20">
+                    <Shield size={12} className="text-star-300" />
+                  </span>
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-star-300">
+                    honest refusal — not in your material
+                  </p>
+                </div>
               )}
               {canSpeak && answer && !busy && (
                 <button
@@ -243,39 +266,39 @@ export function TutorPanel({ courses }: { courses: Course[] }) {
                 </button>
               )}
             </div>
-            <p>
+            <p className="text-ink-100">
               {answer}
               {busy && <span className="caret text-thread-300">▍</span>}
             </p>
           </div>
 
-          {/* refusal → a door: trusted open material to add, never a dead end */}
+          {/* refusal → source suggestions */}
           {sources && !busy && (
-            <div className="rounded-xl border border-white/10 bg-night-700/40 p-4">
-              <p className="mb-2 inline-flex items-center gap-1.5 text-[11px] font-medium text-ink-300">
+            <div className="rounded-xl border border-white/8 bg-night-700/30 p-4">
+              <p className="mb-3 inline-flex items-center gap-2 text-[11px] font-medium text-ink-300">
                 <Compass size={13} className="text-thread-300" />
                 Where to get trustworthy material on {sources.field}
               </p>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {sources.sources.map((s) => (
                   <li key={s.url}>
                     <a
                       href={s.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-start gap-1.5 text-sm text-ink-100 hover:text-thread-300"
+                      className="group flex items-start gap-2.5 rounded-lg border border-transparent p-2 text-sm text-ink-100 transition-all hover:border-white/8 hover:bg-night-600/30 hover:text-thread-300"
                     >
                       <ExternalLink size={13} className="mt-0.5 shrink-0 text-ink-500 group-hover:text-thread-300" />
                       <span>
                         <span className="font-medium underline-offset-2 group-hover:underline">{s.name}</span>
-                        <span className="block text-[11px] text-ink-500">{s.blurb}</span>
+                        <span className="block text-[11px] text-ink-500 mt-0.5">{s.blurb}</span>
                       </span>
                     </a>
                   </li>
                 ))}
               </ul>
-              <p className="mt-2.5 text-[11px] text-ink-500">
-                Add what you find via <span className="text-ink-300">“Add a course”</span> below — then I’ll ground an answer in it and cite the line.
+              <p className="mt-3 text-[11px] text-ink-500 border-t border-white/6 pt-3">
+                Add what you find via <span className="text-ink-300">"Add a course"</span> below — then I'll ground an answer in it and cite the line.
               </p>
             </div>
           )}

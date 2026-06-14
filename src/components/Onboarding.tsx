@@ -1,21 +1,16 @@
 import { useState } from "react";
-import { Sparkles, GraduationCap, Target, ArrowRight } from "lucide-react";
+import { Sparkles, GraduationCap, Target, ArrowRight, Compass } from "lucide-react";
 import type { UserProfile } from "../lib/types";
 import { demoProfile } from "../lib/demoData";
 
 /* ─────────────────────────────────────────────────────────
-   ONBOARDING — the first thing the student does is plan.
-   A short survey turns a pile of courses into "my plan":
-   my degree, my career goal, my exam dates. THIS is what
-   makes the courses mean something — a law degree AND a
-   cloud-cert side-goal is why the sky holds both Law and
-   Cybersecurity. Without this, the app has no purpose on
-   screen. With it, every number downstream is about YOU.
+   ONBOARDING v2 — richer visual treatment.
+   Better glass effect, ambient glow, improved form layout.
    ───────────────────────────────────────────────────────── */
 
 const field =
-  "w-full rounded-xl border border-white/10 bg-night-700/70 px-4 py-2.5 text-sm text-ink-100 placeholder:text-ink-700 focus:border-thread-500/60 focus:outline-none";
-const label = "mb-1 block text-[11px] uppercase tracking-wider text-ink-500";
+  "w-full rounded-xl border border-white/10 bg-night-700/60 px-4 py-2.5 text-sm text-ink-100 placeholder:text-ink-700 focus:border-thread-500/50 focus:outline-none focus:ring-1 focus:ring-thread-500/20 transition-all";
+const label = "mb-1 block text-[11px] uppercase tracking-wider text-ink-500 font-semibold";
 
 export function Onboarding({ onComplete }: { onComplete: (p: UserProfile) => void }) {
   const [p, setP] = useState<UserProfile>({
@@ -33,8 +28,30 @@ export function Onboarding({ onComplete }: { onComplete: (p: UserProfile) => voi
   const ready = p.name.trim() && p.programme.trim();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-night-950/80 p-4 backdrop-blur-sm sm:items-center">
-      <div className="glass my-6 w-full max-w-xl rounded-2xl p-6 sm:p-8">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-night-950/90 backdrop-blur-md p-4 sm:items-center">
+      {/* ambient glow */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(800px 500px at 50% 30%, rgba(111, 127, 242, 0.08), transparent 60%)",
+          }}
+        />
+      </div>
+
+      <div className="glass-glow relative my-6 w-full max-w-xl rounded-2xl p-6 sm:p-8">
+        {/* logo */}
+        <div className="mb-6 flex items-center gap-2.5">
+          <svg width="28" height="28" viewBox="0 0 26 26" aria-hidden="true">
+            <circle cx="6" cy="18" r="2.4" fill="#f5b83d" />
+            <circle cx="13" cy="6" r="2.4" fill="#8b9afb" />
+            <circle cx="21" cy="15" r="2.4" fill="#6fc7bd" />
+            <path d="M6 18 L13 6 L21 15" stroke="#6f7ff2" strokeWidth="1.2" fill="none" opacity="0.7" />
+          </svg>
+          <span className="display text-lg font-semibold tracking-tight text-ink-100">Constella</span>
+        </div>
+
         <div className="mb-1 flex items-center gap-2 text-thread-300">
           <Sparkles size={16} />
           <span className="font-mono text-[11px] uppercase tracking-wider">welcome to Constella</span>
@@ -49,7 +66,7 @@ export function Onboarding({ onComplete }: { onComplete: (p: UserProfile) => voi
 
         {/* You */}
         <div className="mb-5">
-          <div className="mb-2 flex items-center gap-1.5 text-ink-300">
+          <div className="mb-2.5 flex items-center gap-1.5 text-ink-300">
             <GraduationCap size={14} className="text-thread-300" />
             <span className="text-sm font-medium">You</span>
           </div>
@@ -67,7 +84,7 @@ export function Onboarding({ onComplete }: { onComplete: (p: UserProfile) => voi
 
         {/* Degree */}
         <div className="mb-5">
-          <div className="mb-2 text-sm font-medium text-ink-300">Your degree</div>
+          <div className="mb-2.5 text-sm font-medium text-ink-300">Your degree</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div className="sm:col-span-1">
               <label className={label}>Programme</label>
@@ -86,7 +103,7 @@ export function Onboarding({ onComplete }: { onComplete: (p: UserProfile) => voi
 
         {/* Goal */}
         <div className="mb-6">
-          <div className="mb-2 flex items-center gap-1.5 text-ink-300">
+          <div className="mb-2.5 flex items-center gap-1.5 text-ink-300">
             <Target size={14} className="text-star-300" />
             <span className="text-sm font-medium">Your goal beyond the degree</span>
           </div>
@@ -106,17 +123,20 @@ export function Onboarding({ onComplete }: { onComplete: (p: UserProfile) => voi
           </div>
         </div>
 
+        <div className="section-divider mb-5" />
+
         <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             onClick={() => onComplete(demoProfile)}
-            className="text-xs text-ink-500 underline-offset-2 hover:text-ink-300 hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs text-ink-500 underline-offset-2 hover:text-ink-300 hover:underline transition-colors"
           >
+            <Compass size={12} />
             Use the demo profile (Erica · Warwick)
           </button>
           <button
             onClick={() => onComplete({ ...p, name: p.name.trim(), institution: p.institution.trim() || "your institution", programme: p.programme.trim() })}
             disabled={!ready}
-            className="inline-flex items-center gap-2 rounded-xl bg-thread-500 px-5 py-2.5 text-sm font-medium text-night-900 transition-colors hover:bg-thread-400 disabled:opacity-40"
+            className="inline-flex items-center gap-2 rounded-xl bg-thread-500 px-5 py-2.5 text-sm font-medium text-night-900 transition-all hover:bg-thread-400 hover:shadow-lg hover:shadow-thread-500/20 disabled:opacity-40"
           >
             Create my plan <ArrowRight size={15} />
           </button>

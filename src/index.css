@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────
-   CONSTELLA DESIGN TOKENS
+   CONSTELLA DESIGN SYSTEM v2
    The palette is semantic, not decorative:
    · night-*   → the sky. Deep indigo-black, never pure #000.
    · ink-*     → text. Cool off-whites, never pure #FFF.
@@ -18,22 +18,30 @@
   --color-night-700: #12141f;
   --color-night-600: #1a1d2c;
   --color-night-500: #242841;
+  --color-night-400: #2e3358;
 
   --color-ink-100: #f4f6fb;
+  --color-ink-200: #e0e4ed;
   --color-ink-300: #d2d7e2;
+  --color-ink-400: #c0c6d4;
   --color-ink-500: #b2b8c8;
+  --color-ink-600: #a1a7b8;
   --color-ink-700: #9197ab;
 
+  --color-thread-200: #c4cbff;
   --color-thread-300: #aab5ff;
   --color-thread-400: #8b9afb;
   --color-thread-500: #6f7ff2;
   --color-thread-600: #5563d6;
+  --color-thread-700: #3d4ab3;
 
+  --color-star-200: #ffecbe;
   --color-star-300: #ffe1a3;
   --color-star-400: #ffd37a;
   --color-star-500: #f5b83d;
   --color-star-600: #d99a1f;
 
+  --color-ember-300: #ffb89a;
   --color-ember-400: #ff9d7a;
   --color-ember-500: #f0764a;
 
@@ -43,23 +51,18 @@
 }
 
 html {
-  /* Larger base so every rem-sized text scales up for projector / phone
-     legibility without touching each component. */
-  font-size: 18.5px;
-  background: var(--color-night-900);
+  font-size: 16px;
+  background: var(--color-night-950);
   color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: var(--font-body);
-  /* Heavier than default — clear, bold presence on screen and projector. */
   font-weight: 500;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--color-ink-100);
-  background:
-    radial-gradient(1100px 600px at 75% -10%, rgba(111, 127, 242, 0.10), transparent 60%),
-    radial-gradient(900px 500px at 10% 110%, rgba(245, 184, 61, 0.05), transparent 60%),
-    var(--color-night-900);
+  background: var(--color-night-950);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -68,32 +71,82 @@ body {
 h1, h2, h3, .display {
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
-/* Make the small uppercase labels read clearly instead of thin & faint. */
-.tracking-wider,
-.uppercase {
+.tracking-wider, .uppercase {
   font-weight: 600;
 }
 
-/* Buttons and interactive accents carry a little more weight. */
 button {
   font-weight: 600;
+  cursor: pointer;
 }
 
-/* Glass surface — used for floating panels only, never full pages */
+/* ── Glass surfaces ────────────────────────────────────── */
 .glass {
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Blueprint dot grid — the quiet "engineered" texture behind the constellation */
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-glow {
+  background: linear-gradient(
+    135deg,
+    rgba(111, 127, 242, 0.06) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(245, 184, 61, 0.04) 100%
+  );
+  border: 1px solid rgba(111, 127, 242, 0.12);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  box-shadow:
+    0 0 0 1px rgba(111, 127, 242, 0.05) inset,
+    0 0 30px rgba(111, 127, 242, 0.06),
+    0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Blueprint dot grid */
 .dotgrid {
-  background-image: radial-gradient(rgba(170, 181, 255, 0.10) 1px, transparent 1px);
-  background-size: 22px 22px;
+  background-image: radial-gradient(rgba(170, 181, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── Dashboard layout ──────────────────────────────────── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 340px 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-grid {
+    grid-template-columns: 380px 1fr;
+    gap: 1.75rem;
+  }
 }
 
 /* ── 3D flashcard flip ─────────────────────────────────── */
@@ -120,11 +173,11 @@ button {
 
 /* ── Constellation animations ──────────────────────────── */
 @keyframes twinkle {
-  0%, 100% { opacity: 0.55; }
+  0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
 .twinkle {
-  animation: twinkle 2.6s ease-in-out infinite;
+  animation: twinkle 2.8s ease-in-out infinite;
 }
 
 @keyframes drawThread {
@@ -133,27 +186,23 @@ button {
 }
 .thread-draw {
   stroke-dasharray: 600;
-  animation: drawThread 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: drawThread 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Inferred threads don't trace like curated ones — they fade up,
-   signalling "the engine proposed this" rather than "this is drawn
-   from your notes". Faintness comes from stroke-opacity so this
-   element-opacity animation never fights it. */
 @keyframes threadFade {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 .thread-fade {
-  animation: threadFade 1.4s ease-out forwards;
+  animation: threadFade 1.6s ease-out forwards;
 }
 
 @keyframes pulseDot {
   0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.5); opacity: 0.6; }
+  50% { transform: scale(1.6); opacity: 0.5; }
 }
 .pulse-dot {
-  animation: pulseDot 1.2s ease-in-out infinite;
+  animation: pulseDot 1.4s ease-in-out infinite;
 }
 
 @keyframes blinkCaret {
@@ -164,15 +213,155 @@ button {
   animation: blinkCaret 0.9s step-end infinite;
 }
 
+/* ── New animations ────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(111, 127, 242, 0.08) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+@keyframes ringDraw {
+  from { stroke-dashoffset: var(--ring-circumference); }
+  to { stroke-dashoffset: var(--ring-offset); }
+}
+.ring-animate {
+  animation: ringDraw 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes nodeGlow {
+  0%, 100% { r: 11; opacity: 0.15; }
+  50% { r: 14; opacity: 0.25; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+.float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ── Stat card hover ───────────────────────────────────── */
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Sparkline ─────────────────────────────────────────── */
+.sparkline {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Heatmap cells ─────────────────────────────────────── */
+.heatmap-cell {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.heatmap-cell:hover {
+  transform: scale(1.3);
+  opacity: 1 !important;
+}
+
+/* ── Nav item ──────────────────────────────────────────── */
+.nav-item {
+  transition: all 0.15s ease;
+  border-left: 2px solid transparent;
+}
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-left-color: rgba(111, 127, 242, 0.3);
+}
+.nav-item.active {
+  background: rgba(111, 127, 242, 0.08);
+  border-left-color: var(--color-thread-500);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ── Focus ring ────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-thread-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Reduced motion ────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .twinkle, .thread-draw, .thread-fade, .pulse-dot, .caret { animation: none; }
+  .twinkle, .thread-draw, .thread-fade, .pulse-dot, .caret,
+  .fade-in-up, .shimmer, .ring-animate, .glow-pulse, .float {
+    animation: none;
+  }
   .card3d-inner { transition: none; }
+  .stat-card { transition: none; }
+  .heatmap-cell { transition: none; }
+  .nav-item { transition: none; }
 }
 
 ::selection {
   background: rgba(111, 127, 242, 0.35);
 }
 
-button {
-  cursor: pointer;
+/* ── Gradient text utility ─────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-ink-100), var(--color-thread-300));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Section divider ───────────────────────────────────── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(111, 127, 242, 0.15) 20%,
+    rgba(111, 127, 242, 0.15) 80%,
+    transparent
+  );
 }
