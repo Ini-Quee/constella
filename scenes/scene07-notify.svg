@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <radialGradient id="g1" cx="75%" cy="-10%" r="60%"><stop offset="0%" stop-color="#6f7ff2" stop-opacity="0.13"/><stop offset="100%" stop-color="#6f7ff2" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g2" cx="8%" cy="112%" r="55%"><stop offset="0%" stop-color="#f5b83d" stop-opacity="0.07"/><stop offset="100%" stop-color="#f5b83d" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="#07080f"/>
+  <rect width="1280" height="720" fill="url(#g1)"/>
+  <rect width="1280" height="720" fill="url(#g2)"/>
+  <circle cx="120" cy="90" r="1.6" fill="#aab5ff" opacity="0.18"/><circle cx="330" cy="70" r="1.6" fill="#aab5ff" opacity="0.24"/><circle cx="520" cy="110" r="1.6" fill="#aab5ff" opacity="0.3"/><circle cx="980" cy="80" r="1.6" fill="#aab5ff" opacity="0.18"/><circle cx="1140" cy="260" r="1.6" fill="#aab5ff" opacity="0.24"/><circle cx="90" cy="470" r="1.6" fill="#aab5ff" opacity="0.3"/><circle cx="1180" cy="520" r="1.6" fill="#aab5ff" opacity="0.18"/><circle cx="640" cy="140" r="1.6" fill="#aab5ff" opacity="0.24"/><circle cx="420" cy="520" r="1.6" fill="#aab5ff" opacity="0.3"/><circle cx="760" cy="560" r="1.6" fill="#aab5ff" opacity="0.18"/><circle cx="210" cy="600" r="1.6" fill="#aab5ff" opacity="0.24"/><circle cx="1080" cy="150" r="1.6" fill="#aab5ff" opacity="0.3"/>
+  
+  <path d="M40.2 68.2 L60 32.2 L79.8 59.2" stroke="#6f7ff2" stroke-width="1.4400000000000002" fill="none" opacity="0.7"/>
+  <circle cx="40.2" cy="68.2" r="3.7800000000000002" fill="#f5b83d"/>
+  <circle cx="60" cy="32.2" r="3.7800000000000002" fill="#8b9afb"/>
+  <circle cx="79.8" cy="59.2" r="3.7800000000000002" fill="#6fc7bd"/> <text x="96" y="60" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="24" font-weight="600" fill="#f2f4fa" text-anchor="start" letter-spacing="0" opacity="1">Constella</text>
+  <rect x="980" y="36" width="240" height="34" rx="17" fill="rgba(245,184,61,0.10)" stroke="rgba(245,184,61,0.40)"/>
+  <circle cx="1004" cy="53" r="5" fill="#f5b83d"/>
+  <text x="1018" y="59" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="14" font-weight="500" fill="#ffe1a3" text-anchor="start" letter-spacing="0" opacity="1">Grounded · cite or refuse</text>
+  <text x="640" y="190" font-family="'JetBrains Mono','Consolas',monospace" font-size="14" font-weight="400" fill="#aab5ff" text-anchor="middle" letter-spacing="3" opacity="1">STUDY IN THE GAPS</text>
+  <rect x="390" y="230" width="500" height="132" rx="18" fill="#1a1d2c" stroke="rgba(255,255,255,0.12)"/>
+  <path d="M410.2 312.2 L430 276.2 L449.8 303.2" stroke="#6f7ff2" stroke-width="1.4400000000000002" fill="none" opacity="0.7"/>
+  <circle cx="410.2" cy="312.2" r="3.7800000000000002" fill="#f5b83d"/>
+  <circle cx="430" cy="276.2" r="3.7800000000000002" fill="#8b9afb"/>
+  <circle cx="449.8" cy="303.2" r="3.7800000000000002" fill="#6fc7bd"/>
+  <text x="470" y="266" font-family="'JetBrains Mono','Consolas',monospace" font-size="15" font-weight="400" fill="#ccd1de" text-anchor="start" letter-spacing="0" opacity="1">Constella</text>
+  <text x="866" y="266" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="13" font-weight="400" fill="#7d8399" text-anchor="end" letter-spacing="0" opacity="1">now</text>
+  <text x="470" y="300" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="20" font-weight="500" fill="#f2f4fa" text-anchor="start" letter-spacing="0" opacity="1">A minute for LAW 301?</text>
+  <text x="470" y="332" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="16" font-weight="400" fill="#ccd1de" text-anchor="start" letter-spacing="0" opacity="1">When is an arrest lawful?</text>
+  <text x="640" y="444" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="22" font-weight="400" fill="#f2f4fa" text-anchor="middle" letter-spacing="0" opacity="1">Flashcards resurface as gentle notifications all day —</text>
+  <text x="640" y="480" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="22" font-weight="400" fill="#f2f4fa" text-anchor="middle" letter-spacing="0" opacity="1">so you study in the gaps, not just in hour-long sessions.</text>
+  <text x="640" y="540" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="16" font-weight="400" fill="#a6acbe" text-anchor="middle" letter-spacing="0" opacity="1">Tap to answer by voice or text. Repetition, without the guilt.</text>
+
+  
+  <rect x="0" y="650" width="1280" height="70" fill="rgba(7,8,15,0.66)"/>
+  <text x="640" y="692" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="22" font-weight="500" fill="#ccd1de" text-anchor="middle" letter-spacing="0" opacity="1">Flashcards all day — study without sitting down to study.</text>
+</svg>

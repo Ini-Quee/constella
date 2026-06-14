@@ -236,7 +236,96 @@ const s7 = frame(`
   ${t(112, 590, "The course you've mastered drops down the list. The weak, high-priority one rises to the top.", { size: 15, fill: C.ink5 })}
 `, "Diagnose, don't just score — what to study next.");
 
-const scenes = { "scene1-title": s1, "scene2-constellation": s2, "scene3-flashcard": s3, "scene4-cited": s4, "scene5-refusal": s5, "scene6-anysubject": s6, "scene7-readiness": s7 };
+// ── Scene : the problem ──────────────────────────────────
+function gripe(x, y, l1, l2) {
+  return panel(x, y, 360, 150, 16) + t(x+24, y+58, l1, { size: 18, fill: C.ink1, family: DISP }) + t(x+24, y+90, l2, { size: 18, fill: C.ink1, family: DISP }) + t(x+24, y+122, "— a real student", { size: 13, fill: C.ink5 });
+}
+const sProblem = frame(`
+  ${t(640, 150, "THE PROBLEM", { size: 16, family: MONO, fill: C.ember, anchor: "middle", spacing: 3 })}
+  ${t(640, 222, "Students are drowning in material —", { size: 40, family: DISP, weight: 600, anchor: "middle" })}
+  ${t(640, 274, "and can't trust the AI that summarises it.", { size: 40, family: DISP, weight: 600, anchor: "middle", fill: C.ink1 })}
+  ${gripe(100, 360, "“500 pages a day.", "Law school is self-taught.”")}
+  ${gripe(480, 360, "“The AI gave me case", "law that doesn't exist.”")}
+  ${gripe(860, 360, "“I recognise it — then", "freeze in the exam.”")}
+  ${t(640, 600, "Constella fixes all three.", { size: 22, family: DISP, weight: 500, anchor: "middle", fill: C.thread3 })}
+`, "The problem we set out to solve.");
+
+// ── Scene : onboarding survey ────────────────────────────
+function fieldBox(x, y, w, lab, val) {
+  return t(x, y, lab, { size: 11, fill: C.ink5, family: MONO, spacing: 1 }) +
+    `<rect x="${x}" y="${y+10}" width="${w}" height="44" rx="10" fill="${C.night7}" stroke="rgba(255,255,255,0.10)"/>` +
+    t(x+14, y+38, val, { size: 16, fill: C.ink1 });
+}
+const sOnboard = frame(`
+  ${panel(330, 70, 620, 560)}
+  ${t(362, 128, "✦ WELCOME TO CONSTELLA", { size: 12, family: MONO, fill: C.thread3, spacing: 2 })}
+  ${t(362, 166, "Let's build your study plan", { size: 30, family: DISP, weight: 600 })}
+  ${t(362, 196, "Two minutes now, and every card and deadline becomes about you.", { size: 15, fill: C.ink5 })}
+  ${t(362, 236, "YOU", { size: 12, family: MONO, fill: C.ink3, spacing: 2 })}
+  ${fieldBox(362, 252, 270, "YOUR NAME", "Erica")}
+  ${fieldBox(652, 252, 270, "INSTITUTION", "University of Warwick")}
+  ${t(362, 336, "YOUR DEGREE", { size: 12, family: MONO, fill: C.ink3, spacing: 2 })}
+  ${fieldBox(362, 352, 190, "PROGRAMME", "LLB Law")}
+  ${fieldBox(572, 352, 100, "YEAR", "2")}
+  ${fieldBox(692, 352, 230, "FINALS", "08 Jul 2026")}
+  ${t(362, 436, "YOUR GOAL BEYOND THE DEGREE", { size: 12, family: MONO, fill: C.star3, spacing: 2 })}
+  ${fieldBox(362, 452, 180, "CAREER", "Cloud Engineer")}
+  ${fieldBox(562, 452, 200, "CERTIFICATION", "AWS Cloud Pract.")}
+  ${fieldBox(782, 452, 140, "CERT EXAM", "02 Aug")}
+  ${t(362, 552, "Use the demo profile (Erica · Warwick)", { size: 13, fill: C.ink5 })}
+  <rect x="742" y="528" width="180" height="46" rx="12" fill="${C.thread5}"/>
+  ${t(832, 557, "Create my plan →", { size: 15, anchor: "middle", fill: "#0b0d16", weight: 600 })}
+`, "The first thing you do is plan — a quick survey.");
+
+// ── Scene : the personalised plan ────────────────────────
+function statTile(x, y, lab, val, unit, accent) {
+  return panel(x, y, 258, 104, 16) +
+    t(x+20, y+34, lab, { size: 12, fill: C.ink5, family: MONO, spacing: 1 }) +
+    `<text x="${x+20}" y="${y+82}" font-family="${DISP}" font-size="38" font-weight="600" fill="${accent}">${val}<tspan font-size="17" fill="${C.ink5}" font-weight="400"> ${unit}</tspan></text>`;
+}
+const sPlan = frame(`
+  ${header()}
+  ${t(112, 150, "YOUR STUDY PLAN", { size: 12, family: MONO, fill: C.thread3, spacing: 2 })}
+  ${t(112, 192, "Hi Erica — here's your plan", { size: 36, family: DISP, weight: 600 })}
+  <rect x="112" y="214" width="210" height="30" rx="15" fill="${C.night7}" stroke="rgba(255,255,255,0.10)"/>${t(132, 234, "University of Warwick", { size: 14, fill: C.ink3 })}
+  <rect x="334" y="214" width="170" height="30" rx="15" fill="${C.night7}" stroke="rgba(255,255,255,0.10)"/>${t(354, 234, "LLB Law · Year 2", { size: 14, fill: C.ink3 })}
+  <rect x="516" y="214" width="190" height="30" rx="15" fill="rgba(245,184,61,0.10)" stroke="rgba(245,184,61,0.35)"/>${t(536, 234, "→ Cloud Engineer", { size: 14, fill: C.star3 })}
+  ${t(112, 282, "Your degree and your AWS Cloud Practitioner goal, threaded into one sky.", { size: 15, fill: C.ink5 })}
+  <rect x="980" y="176" width="190" height="48" rx="12" fill="${C.thread5}"/>${t(1075, 206, "+ Add a course", { size: 16, anchor: "middle", fill: "#0b0d16", weight: 600 })}
+  ${statTile(112, 330, "FINALS IN", "24", "days", C.ink1)}
+  ${statTile(384, 330, "CERT EXAM IN", "49", "days", C.star3)}
+  ${statTile(656, 330, "TOPICS TO MASTER", "9", "", C.ink1)}
+  ${statTile(928, 330, "OVERALL READINESS", "34", "%", C.ember)}
+  ${t(112, 500, "Statistics that update from your daily answers — so you always know where you stand.", { size: 15, fill: C.ink5 })}
+`, "Your degree + your career, with the numbers that matter.");
+
+// ── Scene : notifications / study all day ────────────────
+const sNotify = frame(`
+  ${header()}
+  ${t(640, 190, "STUDY IN THE GAPS", { size: 14, family: MONO, fill: C.thread3, anchor: "middle", spacing: 3 })}
+  <rect x="390" y="230" width="500" height="132" rx="18" fill="${C.night6}" stroke="rgba(255,255,255,0.12)"/>
+  ${logo(430, 296, 0.9)}
+  ${t(470, 266, "Constella", { size: 15, fill: C.ink3, family: MONO })}
+  ${t(866, 266, "now", { size: 13, fill: C.ink7, anchor: "end" })}
+  ${t(470, 300, "A minute for LAW 301?", { size: 20, fill: C.ink1, family: DISP, weight: 500 })}
+  ${t(470, 332, "When is an arrest lawful?", { size: 16, fill: C.ink3 })}
+  ${t(640, 444, "Flashcards resurface as gentle notifications all day —", { size: 22, family: DISP, anchor: "middle", fill: C.ink1 })}
+  ${t(640, 480, "so you study in the gaps, not just in hour-long sessions.", { size: 22, family: DISP, anchor: "middle", fill: C.ink1 })}
+  ${t(640, 540, "Tap to answer by voice or text. Repetition, without the guilt.", { size: 16, anchor: "middle", fill: C.ink5 })}
+`, "Flashcards all day — study without sitting down to study.");
+
+const scenes = {
+  "scene01-problem": sProblem,
+  "scene02-title": s1,
+  "scene03-onboarding": sOnboard,
+  "scene04-plan": sPlan,
+  "scene05-constellation": s2,
+  "scene06-flashcard": s3,
+  "scene07-notify": sNotify,
+  "scene08-refusal": s5,
+  "scene09-anysubject": s6,
+  "scene10-readiness": s7,
+};
 for (const [name, svg] of Object.entries(scenes)) writeFileSync(`${OUT}/${name}.svg`, svg);
 
 // gallery so they can open ONE file in a browser and screenshot each frame
