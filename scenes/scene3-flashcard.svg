@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <radialGradient id="g1" cx="75%" cy="-10%" r="60%"><stop offset="0%" stop-color="#6f7ff2" stop-opacity="0.13"/><stop offset="100%" stop-color="#6f7ff2" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g2" cx="8%" cy="112%" r="55%"><stop offset="0%" stop-color="#f5b83d" stop-opacity="0.07"/><stop offset="100%" stop-color="#f5b83d" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="#07080f"/>
+  <rect width="1280" height="720" fill="url(#g1)"/>
+  <rect width="1280" height="720" fill="url(#g2)"/>
+  <circle cx="120" cy="90" r="1.6" fill="#aab5ff" opacity="0.18"/><circle cx="330" cy="70" r="1.6" fill="#aab5ff" opacity="0.24"/><circle cx="520" cy="110" r="1.6" fill="#aab5ff" opacity="0.3"/><circle cx="980" cy="80" r="1.6" fill="#aab5ff" opacity="0.18"/><circle cx="1140" cy="260" r="1.6" fill="#aab5ff" opacity="0.24"/><circle cx="90" cy="470" r="1.6" fill="#aab5ff" opacity="0.3"/><circle cx="1180" cy="520" r="1.6" fill="#aab5ff" opacity="0.18"/><circle cx="640" cy="140" r="1.6" fill="#aab5ff" opacity="0.24"/><circle cx="420" cy="520" r="1.6" fill="#aab5ff" opacity="0.3"/><circle cx="760" cy="560" r="1.6" fill="#aab5ff" opacity="0.18"/><circle cx="210" cy="600" r="1.6" fill="#aab5ff" opacity="0.24"/><circle cx="1080" cy="150" r="1.6" fill="#aab5ff" opacity="0.3"/>
+  
+  <path d="M40.2 68.2 L60 32.2 L79.8 59.2" stroke="#6f7ff2" stroke-width="1.4400000000000002" fill="none" opacity="0.7"/>
+  <circle cx="40.2" cy="68.2" r="3.7800000000000002" fill="#f5b83d"/>
+  <circle cx="60" cy="32.2" r="3.7800000000000002" fill="#8b9afb"/>
+  <circle cx="79.8" cy="59.2" r="3.7800000000000002" fill="#6fc7bd"/> <text x="96" y="60" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="24" font-weight="600" fill="#f2f4fa" text-anchor="start" letter-spacing="0" opacity="1">Constella</text>
+  <rect x="980" y="36" width="240" height="34" rx="17" fill="rgba(245,184,61,0.10)" stroke="rgba(245,184,61,0.40)"/>
+  <circle cx="1004" cy="53" r="5" fill="#f5b83d"/>
+  <text x="1018" y="59" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="14" font-weight="500" fill="#ffe1a3" text-anchor="start" letter-spacing="0" opacity="1">Grounded · cite or refuse</text>
+  <rect x="340" y="150" width="600" height="400" rx="20" fill="rgba(255,255,255,0.035)" stroke="rgba(255,255,255,0.09)"/>
+  <rect x="372" y="184" width="360" height="34" rx="17" fill="rgba(245,184,61,0.10)" stroke="rgba(245,184,61,0.45)"/>
+  <path d="M390 193 l8 0 0 9 -4 7 -4 -7 z" fill="none" stroke="#ffe1a3" stroke-width="1.6"/>
+  <text x="410" y="207" font-family="'JetBrains Mono','Consolas',monospace" font-size="14" font-weight="400" fill="#ffe1a3" text-anchor="start" letter-spacing="0" opacity="1">LAW301-syllabus.txt · L13</text>
+  <text x="622" y="207" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="11" font-weight="400" fill="#ffe1a3" text-anchor="start" letter-spacing="1" opacity="0.8">from your material</text>
+  <text x="372" y="280" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="26" font-weight="400" fill="#f2f4fa" text-anchor="start" letter-spacing="0" opacity="1">Only under warrant or recognised statutory</text>
+  <text x="372" y="314" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="26" font-weight="400" fill="#f2f4fa" text-anchor="start" letter-spacing="0" opacity="1">powers — and the suspect must be told the</text>
+  <text x="372" y="348" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="26" font-weight="400" fill="#f2f4fa" text-anchor="start" letter-spacing="0" opacity="1">reason for the arrest.</text>
+  <rect x="372" y="470" width="138" height="46" rx="12" fill="rgba(255,255,255,0.02)" stroke="#ff9d7a" stroke-opacity="0.5"/><text x="441" y="500" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="16" font-weight="500" fill="#ff9d7a" text-anchor="middle" letter-spacing="0" opacity="1">1 Again</text><rect x="522" y="470" width="138" height="46" rx="12" fill="rgba(255,255,255,0.02)" stroke="#f5b83d" stroke-opacity="0.5"/><text x="591" y="500" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="16" font-weight="500" fill="#f5b83d" text-anchor="middle" letter-spacing="0" opacity="1">2 Hard</text><rect x="672" y="470" width="138" height="46" rx="12" fill="rgba(255,255,255,0.02)" stroke="#6f7ff2" stroke-opacity="0.5"/><text x="741" y="500" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="16" font-weight="500" fill="#6f7ff2" text-anchor="middle" letter-spacing="0" opacity="1">3 Good</text><rect x="822" y="470" width="138" height="46" rx="12" fill="rgba(255,255,255,0.02)" stroke="#a6acbe" stroke-opacity="0.5"/><text x="891" y="500" font-family="'Instrument Sans','Segoe UI',Arial,sans-serif" font-size="16" font-weight="500" fill="#a6acbe" text-anchor="middle" letter-spacing="0" opacity="1">4 Easy</text>
+
+  
+  <rect x="0" y="650" width="1280" height="70" fill="rgba(7,8,15,0.66)"/>
+  <text x="640" y="692" font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="22" font-weight="500" fill="#ccd1de" text-anchor="middle" letter-spacing="0" opacity="1">Cite, don't guess — every answer carries its proof.</text>
+</svg>
