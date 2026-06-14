@@ -162,13 +162,18 @@ button {
   transform: rotateY(180deg);
 }
 .card-face {
+  position: relative;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  z-index: 2;
 }
 .card-back {
   position: absolute;
   inset: 0;
   transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  z-index: 1;
 }
 
 /* ── Constellation animations ──────────────────────────── */

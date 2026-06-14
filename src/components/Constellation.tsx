@@ -50,19 +50,20 @@ export function Constellation({
 
   return (
     <div className="glass-glow dotgrid relative overflow-hidden rounded-2xl">
-      {/* ambient nebula glow */}
+      {/* ambient nebula glow — stronger for hero placement */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(600px 300px at 40% 40%, rgba(111,127,242,0.06), transparent 60%), " +
-            "radial-gradient(400px 200px at 70% 60%, rgba(245,184,61,0.04), transparent 60%)",
+            "radial-gradient(700px 350px at 40% 40%, rgba(111,127,242,0.08), transparent 55%), " +
+            "radial-gradient(500px 250px at 70% 60%, rgba(245,184,61,0.05), transparent 55%), " +
+            "radial-gradient(400px 200px at 20% 70%, rgba(111,127,242,0.04), transparent 60%)",
         }}
       />
 
-      <div className="relative z-10 flex items-center justify-between px-5 pt-4 pb-2">
+      <div className="relative z-10 flex items-center justify-between px-6 pt-5 pb-2">
         <div>
-          <h2 className="display text-sm font-semibold text-ink-100">Your constellation</h2>
+          <h2 className="display text-base font-semibold text-ink-100">Your constellation</h2>
           <p className="text-xs text-ink-500">
             {courses.length} courses · {drawableLinks.length} threads found across subjects
           </p>
@@ -79,7 +80,7 @@ export function Constellation({
         className="w-full"
         role="img"
         aria-label="Knowledge constellation showing connections between courses"
-        style={{ minHeight: 280 }}
+        style={{ minHeight: 320 }}
       >
         <defs>
           {/* glow filters per course color */}

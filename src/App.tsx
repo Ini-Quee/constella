@@ -296,9 +296,16 @@ export default function App() {
             </div>
           </header>
 
-          <div className="px-4 sm:px-6 lg:px-8 xl:px-10 py-6 lg:py-8 max-w-5xl mx-auto">
-            {/* plan header */}
+          <div className="px-4 sm:px-6 lg:px-8 xl:px-10 py-6 lg:py-8 max-w-6xl mx-auto">
+            {/* ── constellation (hero — top, bold) ─────── */}
             <Section>
+              <div id="constellation" className="mb-8">
+                <Constellation courses={deck.courses} links={deck.links} />
+              </div>
+            </Section>
+
+            {/* plan header */}
+            <Section delay={0.06}>
               {deck.profile ? (
                 <PlanHeader
                   profile={deck.profile}
@@ -320,13 +327,6 @@ export default function App() {
                   </p>
                 </div>
               )}
-            </Section>
-
-            {/* ── constellation (hero) ──────────────────── */}
-            <Section delay={0.08}>
-              <div id="constellation" className="mb-6">
-                <Constellation courses={deck.courses} links={deck.links} />
-              </div>
             </Section>
 
             {/* ── study session + quick stats ───────────── */}

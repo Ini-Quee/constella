@@ -13,9 +13,9 @@ import type { Course } from "./types";
    ───────────────────────────────────────────────────────── */
 
 export const VIEW_W = 800;
-export const VIEW_H = 460;
+export const VIEW_H = 520;
 const CX = VIEW_W / 2;
-const CY = 222;
+const CY = 252;
 
 export interface NodeLayout {
   x: number;
